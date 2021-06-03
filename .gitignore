@@ -2,6 +2,7 @@ experiments/
 checkpoints/
 data/
 logs/
+docs/wec
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -13,3 +14,6 @@ __pycache__/
 
 # mac
 .DS_Store
+
+# Pycharm
+.idea
