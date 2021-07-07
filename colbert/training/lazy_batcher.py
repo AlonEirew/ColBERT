@@ -1,3 +1,4 @@
+import math
 import os
 import ujson
 
@@ -19,7 +20,9 @@ class LazyBatcher():
 
         self.triples = self._load_triples(args.triples, rank, nranks)
         self.queries = self._load_queries(args.queries)
-        self.collection = self._load_collection(args.collection)
+        self.collection = self._load_queries(args.collection)
+
+        self.tot_batchs = math.ceil(len(self.triples) / args.bsize)
 
     def _load_triples(self, path, rank, nranks):
         """
@@ -35,8 +38,8 @@ class LazyBatcher():
         with open(path) as f:
             for line_idx, line in enumerate(f):
                 if line_idx % nranks == rank:
-                    qid, pos, neg = ujson.loads(line)
-                    triples.append((qid, pos, neg))
+                    qid, pos, neg = line.strip().split('\t')
+                    triples.append((int(qid), int(pos), int(neg)))
 
         return triples
 
@@ -101,3 +104,6 @@ class LazyBatcher():
     def skip_to_batch(self, batch_idx, intended_batch_size):
         Run.warn(f'Skipping to batch #{batch_idx} (with intended_batch_size = {intended_batch_size}) for training.')
         self.position = intended_batch_size * batch_idx
+
+    def reset_position(self):
+        self.position = 0

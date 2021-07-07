@@ -153,7 +153,7 @@ def load_topK_pids(topK_path, qrels):
 def load_collection(collection_path):
     print_message("#> Loading collection...")
 
-    collection = []
+    collection = dict()
 
     with open(collection_path) as f:
         for line_idx, line in enumerate(f):
@@ -161,13 +161,13 @@ def load_collection(collection_path):
                 print(f'{line_idx // 1000 // 1000}M', end=' ', flush=True)
 
             pid, passage, *rest = line.strip().split('\t')
-            assert pid == 'id' or int(pid) == line_idx
+            # assert pid == 'id' or int(pid) == line_idx
 
             if len(rest) >= 1:
                 title = rest[0]
                 passage = title + ' | ' + passage
 
-            collection.append(passage)
+            collection[int(pid)] = passage
 
     print()
 
